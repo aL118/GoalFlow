@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #SBATCH --job-name=cache_trainval
 #SBATCH --output=/fs/nexus-projects/sim2real/aliu/GoalFlow/scripts/cahce/logs/%x.out.%j
 #SBATCH --error=/fs/nexus-projects/sim2real/aliu/GoalFlow/scripts/cahce/logs/%x.out.%j
@@ -19,17 +18,12 @@ export NAVSIM_DEVKIT_ROOT=/fs/nexus-projects/sim2real/aliu/GoalFlow
 export OPENSCENE_DATA_ROOT=/fs/nexus-projects/sim2real/aliu/navsim/dataset
 export NAVSIM_EXP_ROOT=/fs/nexus-projects/sim2real/aliu/GoalFlow
 export NUPLAN_MAPS_ROOT=/fs/nexus-projects/sim2real/aliu/navsim/dataset/maps
-# export LD_LIBRARY_PATH="/usr/local/cuda/lib64"
-# The trajectory_sampling.time_horizon in trainval is 5.5 (default)
-CACHE_TO_SAVE=$NAVSIM_DEVKIT_ROOT/cache/dataset_cache_trainval #set your feature cache path to save
+SPLIT=trainval
+SCNEE_FILTER=navtrain_partial
+CACHE_TO_SAVE=$NAVSIM_DEVKIT_ROOT/metric_cache_trainval
 
-# Increased resources for full trainval dataset (138k scenarios)
-# - threads_per_node will use SLURM cpus-per-task
-# - 128GB RAM to handle Ray object store and GCS
-
-python $NAVSIM_DEVKIT_ROOT/navsim/planning/script/run_dataset_caching.py \
-agent=goalflow_agent_traj \
-experiment_name=a_goalflow_trainval_cache \
-cache_path=$CACHE_TO_SAVE \
-scene_filter=navtrain_partial \
-split=trainval
+python $NAVSIM_DEVKIT_ROOT/navsim/planning/script/run_metric_caching.py \
+scene_filter=$SCNEE_FILTER \
+split=$SPLIT \
+cache.cache_path=$CACHE_TO_SAVE \
+scene_filter.frame_interval=1

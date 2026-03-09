@@ -75,6 +75,14 @@ def build_datasets(cfg: DictConfig, agent: AbstractAgent) -> Tuple[Dataset, Data
 
 @hydra.main(config_path=CONFIG_PATH, config_name=CONFIG_NAME)
 def main(cfg: DictConfig) -> None:
+    # Enable Tensor Cores for better performance on RTX A5000
+    torch.set_float32_matmul_precision('high')
+
+    # Disable Flash Attention backend to avoid SM80 requirement on RTX A5000
+    torch.backends.cuda.enable_flash_sdp(False)
+    torch.backends.cuda.enable_mem_efficient_sdp(True)
+    torch.backends.cuda.enable_math_sdp(True)
+
     logger.info("Global Seed set to 0")
     pl.seed_everything(0, workers=True)
 

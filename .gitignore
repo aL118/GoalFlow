@@ -21,3 +21,9 @@
 /pretrained
 /tests
 /data
+
+/a_goalflow_test_cache
+/a_goalflow_train_cache
+/a_test_release
+/cache
+**/logs

@@ -85,6 +85,11 @@ def _agent_loss(
     cost = config.agent_class_weight * ce_cost + config.agent_box_weight * l1_cost
     cost = cost.cpu()
 
+    # Numerical stability fix for mixed precision training with small batches
+    # Replace NaN/Inf values that can occur with fp16 in cost matrix
+    cost = torch.nan_to_num(cost, nan=1e6, posinf=1e6, neginf=-1e6)
+    cost = torch.clamp(cost, min=-1e6, max=1e6)
+
     indices = [linear_sum_assignment(c) for i, c in enumerate(cost)]
     matching = [
         (torch.as_tensor(i, dtype=torch.int64), torch.as_tensor(j, dtype=torch.int64))

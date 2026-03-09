@@ -19,6 +19,7 @@ Firstly, create conda environment with python 3.10 and intall the packages
 ```bash
 conda create -n goalflow python=3.10
 conda activate goalflow
+pip install torch==2.0.0 torchvision==0.15.1 torchaudio==2.0.0 --index-url https://download.pytorch.org/whl/cu118
 pip install -r requirements.txt
 pip install -e nuplan-devkit
 pip install -e .

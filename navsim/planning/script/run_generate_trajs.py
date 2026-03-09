@@ -105,7 +105,12 @@ def main(cfg: DictConfig) -> None:
 
     logger.info("Building Lightning Module")
     if cfg.agent.checkpoint_path:
-        lightning_module = AgentLightningModule.load_from_checkpoint(agent=agent,checkpoint_path=cfg.agent.checkpoint_path,strict=False)
+        lightning_module = AgentLightningModule.load_from_checkpoint(
+            agent=agent,
+            checkpoint_path=cfg.agent.checkpoint_path,
+            strict=False,
+            map_location='cpu'  # Load on CPU first to avoid OOM on single GPU
+        )
     else:
         lightning_module = AgentLightningModule(
             agent=agent,
